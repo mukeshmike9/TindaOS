@@ -20,7 +20,7 @@ tindaos.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o $(DESTDIR)/tindaos.elf
 
 run: tindaos.iso
-	bochs -f bochsrc.bxrc -q
+	bochs -f .bochsrc.bxrc -q
 
 tindaos.iso: tindaos.elf
 	cp $(DESTDIR)/tindaos.elf $(ROOT)/boot/tindaos.elf
