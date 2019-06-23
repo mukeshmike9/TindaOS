@@ -42,3 +42,4 @@ clean:
 	rm -rf $(DESTDIR)/tindaos.elf
 	rm -rf $(DESTDIR)/bochslog.txt
 	rm -rf $(DESTDIR)/tindaos.iso
+	rm -rf $(ROOT)/boot/tindaos.elf
