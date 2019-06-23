@@ -1,0 +1,5 @@
+    default=15
+    timeout=15
+
+    title TindaOS
+    kernel /boot/tindaos.elf
