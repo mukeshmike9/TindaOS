@@ -6,7 +6,7 @@ DESTDIR=$(ROOT)
 LDFLAGS = -T $(DESTDIR)/link.ld -melf_i386
 
 
-OBJECTS=$(DESTDIR)/loader.o $(DESTDIR)/kmain.o
+OBJECTS=$(DESTDIR)/*.o 
 
 all: compile tindaos.elf
 	echo "ELF File Generated"

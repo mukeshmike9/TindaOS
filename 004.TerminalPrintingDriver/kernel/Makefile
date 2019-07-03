@@ -15,7 +15,9 @@ DESTDIR=./../iso
 TEMPDIR=./../iso
 
 ARCH_OBJS=\
-$(ARCHDIR)/loader.o
+$(ARCHDIR)/loader.o\
+$(ARCHDIR)/terminal.o\
+
 
 KERNEL_OBJS=\
 $(KERNELDIR)/kmain.o
@@ -29,6 +31,12 @@ all: $(ARCH_OBJS) $(KERNEL_OBJS)
 $(ARCHDIR)/%.o: $(ARCHDIR)/%.s
 	$(AS) $(ASFLAGS) $< -o $@
 	mv -f $(ARCHDIR)/*.o $(TEMPDIR)/
+
+$(ARCHDIR)/%.o: $(ARCHDIR)/%.c
+	$(CC) $(CFLAGS) $< -o $@
+	mv -f $(ARCHDIR)/*.o $(TEMPDIR)/
+
+
 
 #Compiling kernel folder
 $(KERNELDIR)/%.o: $(KERNELDIR)/%.c
