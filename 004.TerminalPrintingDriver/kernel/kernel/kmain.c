@@ -3,7 +3,7 @@
 void _kmain()
 {
 	terminalInit();
-	terminalWriteString("TINDA OS\n");
+	terminalWriteString("TINDA OS");
 	while (1)
 	{
 		;
