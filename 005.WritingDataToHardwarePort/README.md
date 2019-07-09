@@ -1,1 +1,1 @@
-# Terminal Printing Driver
+# Writing byte data to hardware port
