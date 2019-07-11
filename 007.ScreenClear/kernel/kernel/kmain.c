@@ -15,7 +15,9 @@ void _kmain()
 			for (int i = 0; i < timer; i++)
 				;
 		}
+
 		i++;
+
 		if (i > 0x5A)
 		{
 			i = 0x30;
@@ -26,6 +28,13 @@ void _kmain()
 		{
 			timer = timer * 32;
 			j++;
+		}
+
+		if (j == 65)
+		{
+			terminalClear();
+			timer = timer / 32;
+			j = 0;
 		}
 	}
 }

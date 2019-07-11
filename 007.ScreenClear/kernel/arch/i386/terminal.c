@@ -29,14 +29,8 @@ static void setCursor()
     outb(FRAME_BUFFER_PORT_DATA, index);
 }
 
-void terminalInit(void)
+void terminalClear()
 {
-    terminalRow = 0;
-    terminalColoumn = 0;
-
-    terminalColor = vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
-    terminalBuffer = VGA_MEMORY;
-
     for (size_t y = 0; y < VGA_HEIGHT; y++)
     {
         for (size_t x = 0; x < VGA_WIDTH; x++)
@@ -45,6 +39,20 @@ void terminalInit(void)
             terminalBuffer[index] = vga_entry(' ', terminalColor);
         }
     }
+
+    terminalRow = 0;
+    terminalColoumn = 0;
+}
+
+void terminalInit(void)
+{
+    terminalRow = 0;
+    terminalColoumn = 0;
+
+    terminalColor = vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+    terminalBuffer = VGA_MEMORY;
+
+    terminalClear();
     setCursor();
 }
 

@@ -4,5 +4,6 @@
 void terminalInit(void);
 void terminalWriteChar(char c);
 void terminalWriteString(char *c);
+void terminalClear();
 
 #endif
