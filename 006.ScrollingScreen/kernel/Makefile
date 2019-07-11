@@ -10,6 +10,7 @@ CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 
 ARCHDIR=./arch/$(ARCH)
 KERNELDIR=./kernel
+LIBCDIR=./libc
 
 DESTDIR=./../iso
 TEMPDIR=./../iso
@@ -22,8 +23,11 @@ $(ARCHDIR)/terminal.o\
 KERNEL_OBJS=\
 $(KERNELDIR)/kmain.o
 
+LIBC_OBJS=\
+$(LIBCDIR)/string.o
 
-all: $(ARCH_OBJS) $(KERNEL_OBJS)
+
+all: $(ARCH_OBJS) $(KERNEL_OBJS) $(LIBC_OBJS)
 	cp $(ARCHDIR)/link.ld $(TEMPDIR)
 
 	
@@ -43,6 +47,10 @@ $(KERNELDIR)/%.o: $(KERNELDIR)/%.c
 	$(CC) $(CFLAGS)  $< -o $@
 	mv -f $(KERNELDIR)/*.o $(TEMPDIR)/
 
+#Compiling libc folder
+$(LIBCDIR)/%.o: $(LIBCDIR)/%.c
+	$(CC) $(CFLAGS)  $< -o $@
+	mv -f $(LIBCDIR)/*.o $(TEMPDIR)/
 
 clean:
 	rm -rf $(ARCHDIR)/*.o

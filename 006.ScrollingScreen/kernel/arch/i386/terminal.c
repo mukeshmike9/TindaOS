@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "../../libc/include/io.h"
+#include "../../libc/include/string.h"
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -57,7 +58,9 @@ void terminalWriteChar(char c)
         terminalRow = 0;
         if (++terminalColoumn == VGA_HEIGHT)
         {
-            terminalColoumn = 0;
+            memcpy(terminalBuffer, &terminalBuffer[VGA_WIDTH], (VGA_WIDTH * (VGA_HEIGHT - 1)) * 2);
+            terminalColoumn--;
+            memset(&terminalBuffer[terminalColoumn * VGA_WIDTH], 0, VGA_WIDTH * 2);
         }
     }
     setCursor();
