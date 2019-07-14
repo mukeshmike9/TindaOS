@@ -2,8 +2,8 @@
 #include "../../libc/include/io.h"
 #include "../../libc/include/string.h"
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
+static const ssize_t VGA_WIDTH = 80;
+static const ssize_t VGA_HEIGHT = 25;
 static const uint16_t FRAME_BUFFER_PORT_COMMAND = 0x03D4;
 static const uint16_t FRAME_BUFFER_PORT_DATA = 0x03D5;
 
@@ -15,10 +15,12 @@ static const uint8_t FRAME_BUFFER_LOWER_8_BITS_POSITION = 15;
 
 static uint16_t *const VGA_MEMORY = (uint16_t *)0x0B8000;
 
-static size_t terminalRow;
-static size_t terminalColoumn;
+static ssize_t terminalRow;
+static ssize_t terminalColoumn;
 static uint8_t terminalColor;
 static uint16_t *terminalBuffer;
+
+void terminalWriteString(char *string);
 
 static void setCursor()
 {
@@ -31,9 +33,9 @@ static void setCursor()
 
 void terminalClear()
 {
-    for (size_t y = 0; y < VGA_HEIGHT; y++)
+    for (ssize_t y = 0; y < VGA_HEIGHT; y++)
     {
-        for (size_t x = 0; x < VGA_WIDTH; x++)
+        for (ssize_t x = 0; x < VGA_WIDTH; x++)
         {
             const size_t index = (y * VGA_WIDTH) + x;
             terminalBuffer[index] = vga_entry(' ', terminalColor);
@@ -42,6 +44,13 @@ void terminalClear()
 
     terminalRow = 0;
     terminalColoumn = 0;
+}
+
+void scroll()
+{
+    memcpy(terminalBuffer, &terminalBuffer[VGA_WIDTH], (VGA_WIDTH * (VGA_HEIGHT - 1)) * 2);
+    terminalColoumn--;
+    memset(&terminalBuffer[terminalColoumn * VGA_WIDTH], 0, VGA_WIDTH * 2);
 }
 
 void terminalInit(void)
@@ -58,17 +67,35 @@ void terminalInit(void)
 
 void terminalWriteChar(char c)
 {
-    const size_t index = (terminalColoumn * VGA_WIDTH) + terminalRow;
-    terminalBuffer[index] = vga_entry(c, terminalColor);
+    size_t index = (terminalColoumn * VGA_WIDTH) + terminalRow;
+
+    switch (c)
+    {
+    case '\n':
+        terminalRow = -1;
+        terminalColoumn++;
+        break;
+    case '\t':
+        terminalWriteString("    ");
+        break;
+    case '\b':
+        terminalBuffer[index--] = vga_entry(' ', terminalColor);
+        terminalRow -= 2;
+        if (terminalRow == -2)
+        {
+            terminalRow = -1;
+        }
+        break;
+    default:
+        terminalBuffer[index] = vga_entry(c, terminalColor);
+    }
 
     if (++terminalRow == VGA_WIDTH)
     {
         terminalRow = 0;
         if (++terminalColoumn == VGA_HEIGHT)
         {
-            memcpy(terminalBuffer, &terminalBuffer[VGA_WIDTH], (VGA_WIDTH * (VGA_HEIGHT - 1)) * 2);
-            terminalColoumn--;
-            memset(&terminalBuffer[terminalColoumn * VGA_WIDTH], 0, VGA_WIDTH * 2);
+            scroll();
         }
     }
     setCursor();
